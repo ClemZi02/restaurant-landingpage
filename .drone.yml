@@ -28,7 +28,7 @@ steps:
       bucket: bucket-resto-s3 
       region: us-east-1   
       
-      source: public/**/*
+      source: public
       target: /
       acl: public-read               
       cache_control: max-age=86400
