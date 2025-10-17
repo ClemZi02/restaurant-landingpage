@@ -7,7 +7,6 @@ type: docker
 name: hugo-to-s3-deploy
 
 steps:
-  # Étape 1: Hugo Build
   - name: hugo-build
     image: peaceiris/hugo:v0.65.3-mod
     environment:
@@ -15,20 +14,17 @@ steps:
     commands:
       - hugo --baseURL $BASE_URL
 
-  # Étape 2: Déploiement via AWS CLI
   - name: deploy-to-s3
     image: amazon/aws-cli:2.31.17 
     environment:
-      # Les identifiants doivent être définis dans l'environnement pour l'AWS CLI
       AWS_ACCESS_KEY_ID:
         from_secret: AWS_ACCESS_KEY_ID
       AWS_SECRET_ACCESS_KEY:
         from_secret: AWS_SECRET_ACCESS_KEY
       AWS_DEFAULT_REGION: us-east-1
-      # Retirez la variable AWS_SESSION_TOKEN si vous n'utilisez pas de rôle STS temporaire !
+      AWS_SESSION_TOKEN:
+        from_secret: AWS_SESSION_TOKEN
     commands:
-      # La commande 'aws s3 cp' est l'équivalent de l'upload du plugin
-      # 'public/' source, 's3://bucket-resto-s3/' destination, '--recursive' pour le contenu
       - aws s3 cp public/ s3://bucket-resto-s3/ --recursive --acl public-read --cache-control max-age=86400
 
     when:
