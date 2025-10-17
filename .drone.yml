@@ -46,6 +46,7 @@ hugo_env: &hugo_env
   BASE_URL:  http://bucket-resto-s3.s3-website-us-east-1.amazonaws.com
 
 kind: pipeline
+type: docker
 name: hugo-s3-deploy
 
 steps:
