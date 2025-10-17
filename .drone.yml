@@ -1,53 +1,11 @@
 # ---
-# #test
-# hugo_env: &hugo_env
-#   BASE_URL: http://bucket-resto-s3.s3-website-us-east-1.amazonaws.com
-
-# kind: pipeline
-# type: docker
-# name: hugo-to-s3-deploy
-
-# steps:
-#   - name: hugo-build
-#     image: peaceiris/hugo:v0.65.3-mod
-#     environment:
-#       <<: *hugo_env
-#     commands:
-#       - hugo --baseURL $BASE_URL
-
-#   - name: deploy-to-s3
-#     image: plugins/s3
-#     settings:
-#       access_key:
-#         from_secret: AWS_ACCESS_KEY_ID
-#       secret_key:
-#         from_secret: AWS_SECRET_ACCESS_KEY
-#       secret_token:
-#         from_secret: AWS_SESSION_TOKEN
-
-#       bucket: bucket-resto-s3 
-#       region: us-east-1   
-      
-#       source: public
-#       target: /
-#       acl: public-read               
-#       cache_control: max-age=86400
-#       overwrite: true
-
-#     when:
-#       event: push
-#       branch:
-#         - main
-#         - master
-
-
----
+#test
 hugo_env: &hugo_env
-  BASE_URL:  http://bucket-resto-s3.s3-website-us-east-1.amazonaws.com
+  BASE_URL: http://bucket-resto-s3.s3-website-us-east-1.amazonaws.com
 
 kind: pipeline
 type: docker
-name: hugo-s3-deploy
+name: hugo-to-s3-deploy
 
 steps:
   - name: hugo-build
@@ -58,18 +16,60 @@ steps:
       - hugo --baseURL $BASE_URL
 
   - name: deploy-to-s3
-    image: amazon/aws-cli:2.31.17   
-    environment:
-      AWS_ACCESS_KEY_ID:
+    image: amazon/aws-cli:2.31.17
+    settings:
+      access_key:
         from_secret: AWS_ACCESS_KEY_ID
-      AWS_SECRET_ACCESS_KEY:
+      secret_key:
         from_secret: AWS_SECRET_ACCESS_KEY
-      AWS_DEFAULT_REGION: us-east-1
-      AWS_SESSION_TOKEN:
+      secret_token:
         from_secret: AWS_SESSION_TOKEN
-    commands:
-      - aws s3 cp public/ s3://bucket-resto-s3 / --recursive --acl public-read
+
+      bucket: bucket-resto-s3 
+      region: us-east-1   
+      
+      source: public
+      target: /
+      acl: public-read               
+      cache_control: max-age=86400
+      overwrite: true
 
     when:
       event: push
-      branch: master
+      branch:
+        - main
+        - master
+
+
+# ---
+# hugo_env: &hugo_env
+#   BASE_URL:  http://bucket-resto-s3.s3-website-us-east-1.amazonaws.com
+
+# kind: pipeline
+# type: docker
+# name: hugo-s3-deploy
+
+# steps:
+#   - name: hugo-build
+#     image: peaceiris/hugo:v0.65.3-mod
+#     environment:
+#       <<: *hugo_env
+#     commands:
+#       - hugo --baseURL $BASE_URL
+
+#   - name: deploy-to-s3
+#     image: amazon/aws-cli:2.31.17   
+#     environment:
+#       AWS_ACCESS_KEY_ID:
+#         from_secret: AWS_ACCESS_KEY_ID
+#       AWS_SECRET_ACCESS_KEY:
+#         from_secret: AWS_SECRET_ACCESS_KEY
+#       AWS_DEFAULT_REGION: us-east-1
+#       AWS_SESSION_TOKEN:
+#         from_secret: AWS_SESSION_TOKEN
+#     commands:
+#       - aws s3 cp public/ s3://bucket-resto-s3 / --recursive --acl public-read
+
+#     when:
+#       event: push
+#       branch: master
