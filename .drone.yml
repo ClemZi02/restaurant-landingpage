@@ -21,6 +21,8 @@ steps:
         from_secret: AWS_ACCESS_KEY_ID
       secret_key:
         from_secret: AWS_SECRET_ACCESS_KEY
+      secret_token:
+        from_secret: AWS_SESSION_TOKEN
 
       bucket: bucket-resto-s3 
       region: us-east-1   
